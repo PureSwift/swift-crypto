@@ -23,6 +23,11 @@
 // BoringSSL Commit: f961de5c47ed265c3e758ec70dd15ece20809962
 
 import PackageDescription
+import class Foundation.ProcessInfo
+
+// force building as dynamic library
+let dynamicLibrary = ProcessInfo.processInfo.environment["SWIFT_BUILD_DYNAMIC_LIBRARY"] != nil
+let libraryType: PackageDescription.Product.Library.LibraryType? = dynamicLibrary ? .dynamic : nil
 
 // To develop this on Apple platforms, set this to true
 let development = false
@@ -62,8 +67,8 @@ let package = Package(
         .tvOS(.v13),
     ],
     products: [
-        .library(name: "Crypto", targets: ["Crypto"]),
-        .library(name: "_CryptoExtras", targets: ["_CryptoExtras"]),
+        .library(name: "Crypto", type: libraryType, targets: ["Crypto"]),
+        .library(name: "_CryptoExtras", type: libraryType, targets: ["_CryptoExtras"]),
         /* This target is used only for symbol mangling. It's added and removed automatically because it emits build warnings. MANGLE_START
             .library(name: "CCryptoBoringSSL", type: .static, targets: ["CCryptoBoringSSL"]),
             MANGLE_END */
